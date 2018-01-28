@@ -65,22 +65,22 @@ enum sf_t { SF7=7, SF8, SF9, SF10, SF11, SF12 };
 bool debug = true;
 
 // SX1272 - Raspberry connections
-//int ssPin = 6;
-int ssPin = 3; // GPO22 pin 15 
+int ssPin = 6;
+//int ssPin = 3; // GPO22 pin 15
 //int dio0  = 7;
 int dio0  = 7; // GPIO4 pin 7
-//int RST   = 0;
-int RST   = 2; // GPIO21/27 pin 13
+int RST   = 0;
+//int RST   = 2; // GPIO21/27 pin 13
 // Set spreading factor (SF7 - SF12)
-sf_t sf = SF7;
+sf_t sf = SF12;
 
 // Set center frequency
 uint32_t  freq = 868100000; // in Mhz! (868.1)
 
 // Set location
-float lat=0.0;
-float lon=0.0;
-int   alt=0;
+float lat=50.25497551;
+float lon=14.51577079;
+int   alt=191;
 
 /* Informal status fields */
 static char platform[24]    = "Single Channel Gateway";  /* platform definition */
@@ -90,8 +90,8 @@ static char description[64] = "";                        /* used for free form d
 // define servers
 // TODO: use host names and dns
 //#define SERVER1 "54.72.145.119"    // The Things Network: croft.thethings.girovito.nl
-//   router.eu.thethings.network	canonical name = bridge.eu.thethings.network.
-//    Name:	bridge.eu.thethings.network
+//   router.eu.thethings.network        canonical name = bridge.eu.thethings.network.
+//    Name:     bridge.eu.thethings.network
 //    Address: 52.169.76.203
 #define SERVER1 "52.169.76.203"    // The Things Network: router.eu.thethings.network
 
@@ -114,14 +114,14 @@ static char description[64] = "";                        /* used for free form d
 #define REG_MODEM_CONFIG            0x1D
 #define REG_MODEM_CONFIG2           0x1E
 #define REG_MODEM_CONFIG3           0x26
-#define REG_SYMB_TIMEOUT_LSB  		0x1F
-#define REG_PKT_SNR_VALUE			0x19
+#define REG_SYMB_TIMEOUT_LSB            0x1F
+#define REG_PKT_SNR_VALUE                       0x19
 #define REG_PAYLOAD_LENGTH          0x22
 #define REG_IRQ_FLAGS_MASK          0x11
-#define REG_MAX_PAYLOAD_LENGTH 		0x23
+#define REG_MAX_PAYLOAD_LENGTH          0x23
 #define REG_HOP_PERIOD              0x24
-#define REG_SYNC_WORD				0x39
-#define REG_VERSION	  				0x42
+#define REG_SYNC_WORD                           0x39
+#define REG_VERSION                                     0x42
 
 #define SX72_MODE_RX_CONTINUOS      0x85
 #define SX72_MODE_TX                0x83
@@ -134,7 +134,7 @@ static char description[64] = "";                        /* used for free form d
 #define REG_LNA                     0x0C
 #define LNA_MAX_GAIN                0x23
 #define LNA_OFF_GAIN                0x00
-#define LNA_LOW_GAIN		    	0x20
+#define LNA_LOW_GAIN                    0x20
 
 // CONF REG
 #define REG1                        0x0A
@@ -169,7 +169,7 @@ static char description[64] = "";                        /* used for free form d
 #define PKT_PULL_ACK  4
 
 #define TX_BUFF_SIZE  2048
-#define STATUS_SIZE	  1024
+#define STATUS_SIZE       1024
 
 void die(const char *s)
 {
@@ -253,7 +253,7 @@ boolean receivePkt(char *payload)
 void SetupLoRa()
 {
     if(debug) printf("SetupLoRa():\n");
-    
+
     digitalWrite(RST, HIGH);
     delay(100);
     digitalWrite(RST, LOW);
@@ -278,7 +278,7 @@ void SetupLoRa()
             sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
-            //printf("Version: 0x%x\n",version);
+            printf("Version: 0x%x\n",version);
             exit(1);
         }
     }
@@ -417,7 +417,7 @@ void receivepacket() {
                 // Divide by 4
                 SNR = ( value & 0xFF ) >> 2;
             }
-            
+
             if (sx1272) {
                 rssicorr = 139;
             } else {
@@ -565,7 +565,7 @@ int main () {
 
     if(debug) printf("WiringPi setup:\n");
     wiringPiSetup ();
-    
+
     if(debug) {
         printf("RPi Pin modes setup:\n");
         printf("  ssPin: %d \n", ssPin);
@@ -578,7 +578,7 @@ int main () {
     pinMode(RST, OUTPUT);
 
     if(debug) printf("wiringPiSPISetup:\n");
-    //int fd = 
+    //int fd =
     wiringPiSPISetup(CHANNEL, 500000);
     //cout << "Init result: " << fd << endl;
 
@@ -594,7 +594,7 @@ int main () {
     si_other.sin_port = htons(PORT);
 
     ifr.ifr_addr.sa_family = AF_INET;
-    strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);  // can we rely on eth0?
+    strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);  // can we rely on eth0?
     ioctl(s, SIOCGIFHWADDR, &ifr);
 
     /* display result */
