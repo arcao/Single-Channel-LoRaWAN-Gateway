@@ -22,5 +22,5 @@ install:
 	mkdir -p $(DESTDIR)$(prefix)/lib/systemd/system
 	install -m 0755 single_channel_lorawan_gateway $(DESTDIR)$(prefix)/sbin
 	install -m 0755 systemd/lorawan-spgw.service $(DESTDIR)$(prefix)/lib/systemd/system
-  systemctl daemon-reload
-  systemctl enable lorawan-spgw
+	systemctl daemon-reload
+	systemctl enable lorawan-spgw
